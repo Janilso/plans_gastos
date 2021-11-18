@@ -23,18 +23,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       preferredSize: preferredSize,
       child: Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              offset: const Offset(0, 5.0),
-              blurRadius: 15,
-              spreadRadius: 2,
-            )
-          ],
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withOpacity(0.15),
+          //     offset: const Offset(0, 5.0),
+          //     blurRadius: 15,
+          //     spreadRadius: 2,
+          //   )
+          // ],
           color: backgroundColor,
         ),
         child: AppBar(
-          elevation: 0.0,
+          elevation: 6,
+          shadowColor: Colors.black.withOpacity(0.4),
           backgroundColor: Colors.white,
           title: Padding(
             padding: const EdgeInsets.only(top: 10),
@@ -49,6 +50,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               bottom: Radius.circular(16),
             ),
           ),
+          excludeHeaderSemantics: true,
         ),
       ),
     );
