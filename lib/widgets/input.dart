@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
+import 'package:plans_gastos/utils/enuns.dart';
 
 class InputWidget extends StatelessWidget {
   final TextEditingController? controller;
@@ -9,11 +10,14 @@ class InputWidget extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   // final bool label;
   final bool enabled;
+  final bool autofocus;
   final String labelText;
   final String hintText;
   final Color fillColor;
-  final ValueChanged<String>? onChange;
-  final bool isDanger;
+  final ValueChanged<dynamic>? onChange;
+  final TypeInput type;
+  final TypeBalance typeBalance;
+  final bool valueSWitch;
 
   const InputWidget({
     Key? key,
@@ -21,15 +25,19 @@ class InputWidget extends StatelessWidget {
     this.keyboardType,
     this.validator,
     this.enabled = true,
+    this.autofocus = false,
     this.labelText = "",
     this.hintText = "",
     this.fillColor = AppColors.primary,
     this.onChange,
-    this.isDanger = false,
+    this.type = TypeInput.text,
+    this.typeBalance = TypeBalance.inputs,
+    this.valueSWitch = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    bool isDanger = typeBalance == TypeBalance.outputs;
     Color inputStateColor = isDanger ? AppColors.secondary : AppColors.primary;
     return SingleChildScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -52,28 +60,47 @@ class InputWidget extends StatelessWidget {
             ),
             Expanded(
               flex: 4,
-              child: TextFormField(
-                decoration: InputDecoration(
-                    alignLabelWithHint: true,
-                    // filled: true,
-                    fillColor: fillColor,
-                    hintText: hintText,
-                    enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
+              child: type == TypeInput.text
+                  ? TextFormField(
+                      autofocus: autofocus,
+                      decoration: InputDecoration(
+                          alignLabelWithHint: true,
+                          fillColor: fillColor,
+                          hintText: hintText,
+                          hintStyle: AppTextStyles.h6Regular(
+                            color: AppColors.black.withOpacity(0.3),
+                          ),
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
+                          )),
+                      // style: enabled ? textStyle : textStyleDisabled,
+                      controller: controller,
+                      keyboardType: keyboardType,
+                      validator: validator,
+                      onChanged: onChange,
+                      enabled: enabled,
+                      cursorColor: inputStateColor,
+                      textAlign: TextAlign.right,
+                      style: AppTextStyles.h6Regular(color: inputStateColor),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Switch(
+                          value: valueSWitch,
+                          onChanged: onChange,
+                          activeTrackColor: isDanger
+                              ? AppColors.secondary.withOpacity(0.4)
+                              : AppColors.primary.withOpacity(0.4),
+                          activeColor: isDanger
+                              ? AppColors.secondary
+                              : AppColors.primary,
+                        ),
+                      ],
                     ),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                    )),
-                // style: enabled ? textStyle : textStyleDisabled,
-                controller: controller,
-                keyboardType: keyboardType,
-                validator: validator,
-                onChanged: onChange,
-                enabled: enabled,
-                cursorColor: inputStateColor,
-                textAlign: TextAlign.right,
-                style: AppTextStyles.h6Regular(color: inputStateColor),
-              ),
             )
           ],
         ),

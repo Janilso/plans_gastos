@@ -4,6 +4,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
+import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/formats.dart';
 import 'package:plans_gastos/widgets/add_balance.dart';
 import 'package:plans_gastos/widgets/balance_tab_view.dart';
@@ -26,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int initialNextsPrevsMonths = 12;
   late int actualIndex;
   List<ItemBalance> mockBalances = Mocks.mockListItemBalice;
-  bool isDanger = false;
+  // bool isDanger = false;
+  TypeBalance typeBalancePage = TypeBalance.inputs;
 
   @override
   void initState() {
@@ -91,26 +93,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
-  void _handleChangeBalance(int index) {
+  void _handleChangeBalance(TypeBalance typeBalance) {
     setState(() {
-      isDanger = index == 1;
+      typeBalancePage = typeBalance;
     });
   }
 
-  void _handleAddBalance() {
+  void _handleAddBalance(TypeBalance typeBalance) {
     showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        builder: (_) => const AddBalanceWidget());
+      ),
+      builder: (_) => AddBalanceWidget(
+        typeBalance: typeBalance,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDanger = typeBalancePage == TypeBalance.outputs;
     String titlePage = isDanger ? 'SAÍDAS' : 'ENTRADAS';
     Color colorState = isDanger ? AppColors.secondary : AppColors.primary;
 
@@ -172,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _handleAddBalance,
+        onPressed: () => _handleAddBalance(typeBalancePage),
         child: const Icon(FeatherIcons.plus),
         backgroundColor: colorState,
       ),

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
+import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/widgets/item_balance.dart';
 
 class BalanceTabViewWidget extends StatefulWidget {
   final List<ItemBalance> inputBalances;
   final List<ItemBalance> outputBalances;
-  final void Function(int typeBalance)? onChangePage;
+  final void Function(TypeBalance typeBalance)? onChangePage;
 
   const BalanceTabViewWidget({
     Key? key,
@@ -41,7 +42,8 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
 
   handleChangePage() {
     if (widget.onChangePage != null) {
-      widget.onChangePage!(_tabController.index);
+      widget.onChangePage!(
+          _tabController.index == 0 ? TypeBalance.inputs : TypeBalance.outputs);
     }
   }
 
