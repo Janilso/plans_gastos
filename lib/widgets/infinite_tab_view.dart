@@ -79,10 +79,7 @@ class _InfiniteTabViewState extends State<InfiniteTabView>
               widget.length,
               (index) {
                 return Tab(
-                  icon: widget.buildTabBar!(
-                    context,
-                    index,
-                  ),
+                  icon: widget.buildTabBar!(context, index),
                 );
               },
             ),
@@ -93,10 +90,7 @@ class _InfiniteTabViewState extends State<InfiniteTabView>
               children: List.generate(
                 widget.length,
                 (index) {
-                  return widget.buildTabView!(
-                    context,
-                    index,
-                  );
+                  return widget.buildTabView!(context, index);
                 },
               ),
             ),

@@ -7,11 +7,6 @@ ThemeData appTheme = ThemeData(
   indicatorColor: Colors.white,
   splashColor: Colors.white24,
   splashFactory: InkRipple.splashFactory,
-  // colorScheme: ColorScheme.fromSwatch().copyWith(
-  //   secondary: AppColors.primary, // Your accent color
-  // ),
-  // accentColor: Colors.white,
-  // accentColor: Colors.red,
   canvasColor: Colors.white,
   scaffoldBackgroundColor: Colors.white,
   backgroundColor: Colors.white,
@@ -21,9 +16,20 @@ ThemeData appTheme = ThemeData(
   buttonTheme: const ButtonThemeData(
     textTheme: ButtonTextTheme.primary,
   ),
+  tabBarTheme: const TabBarTheme(
+      labelStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1,
+      ),
+      unselectedLabelColor: AppColors.whiteDesable,
+      unselectedLabelStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        height: 1,
+      )),
   textTheme: _buildTextTheme(base.textTheme),
   primaryTextTheme: _buildTextTheme(base.primaryTextTheme),
-  // accentTextTheme: _buildTextTheme(base.accentTextTheme),
 );
 
 TextTheme _buildTextTheme(TextTheme base) {
