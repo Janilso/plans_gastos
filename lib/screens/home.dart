@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/utils/formats.dart';
+import 'package:plans_gastos/widgets/add_balance.dart';
 import 'package:plans_gastos/widgets/balance_tab_view.dart';
 import 'package:plans_gastos/widgets/infinite_tab_view.dart';
 import 'package:plans_gastos/utils/mocks.dart';
@@ -96,6 +97,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  void _handleAddBalance() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        builder: (_) => const AddBalanceWidget());
+  }
+
   @override
   Widget build(BuildContext context) {
     String titlePage = isDanger ? 'SAÍDAS' : 'ENTRADAS';
@@ -159,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _handleAddBalance,
         child: const Icon(FeatherIcons.plus),
         backgroundColor: colorState,
       ),
