@@ -39,71 +39,72 @@ class InputWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDanger = typeBalance == TypeBalance.outputs;
     Color inputStateColor = isDanger ? AppColors.secondary : AppColors.primary;
+    UnderlineInputBorder disabledBorder = const UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.transparent),
+    );
+
     return SingleChildScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      child: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: AppColors.grayLight, width: 1),
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Container(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: Text(labelText,
-                    style: AppTextStyles.h6Regular(color: AppColors.black)),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Text(labelText,
+                      style: AppTextStyles.h6Regular(color: AppColors.black)),
+                ),
               ),
-            ),
-            Expanded(
-              flex: 4,
-              child: type == TypeInput.text
-                  ? TextFormField(
-                      autofocus: autofocus,
-                      decoration: InputDecoration(
+              Expanded(
+                flex: 4,
+                child: type == TypeInput.text
+                    ? TextFormField(
+                        autofocus: autofocus,
+                        decoration: InputDecoration(
                           alignLabelWithHint: true,
                           fillColor: fillColor,
                           hintText: hintText,
                           hintStyle: AppTextStyles.h6Regular(
                             color: AppColors.black.withOpacity(0.3),
                           ),
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.transparent),
-                          )),
-                      // style: enabled ? textStyle : textStyleDisabled,
-                      controller: controller,
-                      keyboardType: keyboardType,
-                      validator: validator,
-                      onChanged: onChange,
-                      enabled: enabled,
-                      cursorColor: inputStateColor,
-                      textAlign: TextAlign.right,
-                      style: AppTextStyles.h6Regular(color: inputStateColor),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Switch(
-                          value: valueSWitch,
-                          onChanged: onChange,
-                          activeTrackColor: isDanger
-                              ? AppColors.secondary.withOpacity(0.4)
-                              : AppColors.primary.withOpacity(0.4),
-                          activeColor: isDanger
-                              ? AppColors.secondary
-                              : AppColors.primary,
+                          enabledBorder: disabledBorder,
+                          focusedBorder: disabledBorder,
+                          errorBorder: disabledBorder,
+                          focusedErrorBorder: disabledBorder,
                         ),
-                      ],
-                    ),
-            )
-          ],
-        ),
+                        // style: enabled ? textStyle : textStyleDisabled,
+                        controller: controller,
+                        keyboardType: keyboardType,
+                        validator: validator,
+                        onChanged: onChange,
+                        enabled: enabled,
+                        cursorColor: inputStateColor,
+                        textAlign: TextAlign.right,
+                        style: AppTextStyles.h6Regular(color: inputStateColor),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Switch(
+                            value: valueSWitch,
+                            onChanged: onChange,
+                            activeTrackColor: isDanger
+                                ? AppColors.secondary.withOpacity(0.4)
+                                : AppColors.primary.withOpacity(0.4),
+                            activeColor: isDanger
+                                ? AppColors.secondary
+                                : AppColors.primary,
+                          ),
+                        ],
+                      ),
+              )
+            ],
+          ),
+          const Divider(color: AppColors.grayLight, endIndent: 2),
+        ],
       ),
     );
   }

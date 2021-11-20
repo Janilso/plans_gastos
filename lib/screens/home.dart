@@ -1,13 +1,19 @@
+import 'dart:convert';
+
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
+import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/formats.dart';
+import 'package:plans_gastos/utils/storage.dart';
 import 'package:plans_gastos/widgets/add_balance.dart';
 import 'package:plans_gastos/widgets/balance_tab_view.dart';
+import 'package:plans_gastos/widgets/detail_month.dart';
 import 'package:plans_gastos/widgets/infinite_tab_view.dart';
 import 'package:plans_gastos/utils/mocks.dart';
 import 'package:plans_gastos/widgets/app_bar.dart';
@@ -26,8 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<DateTime> months = [];
   int initialNextsPrevsMonths = 12;
   late int actualIndex;
-  List<ItemBalance> mockBalances = Mocks.mockListItemBalice;
-  // bool isDanger = false;
+  List<BalanceModel> mockBalances = Mocks.mockListItemBalice;
   TypeBalance typeBalancePage = TypeBalance.inputs;
 
   @override
@@ -42,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         date.year == dateNow.year &&
         date.month == dateNow.month &&
         date.day == dateNow.day);
+    //     const
+    // balancesInputsMonths = listBalancesModelFromJson()
   }
 
   @override
@@ -110,6 +117,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       builder: (_) => AddBalanceWidget(
         typeBalance: typeBalance,
+        actualMonth: months[actualIndex],
+        onAdded: () {
+          setState(() {});
+        },
       ),
     );
   }
@@ -123,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBarWidget(
         title:
-            "$titlePage - ${AppFormats.dateToMonthNamed(months[actualIndex]).capitalize()}",
+            "$titlePage - ${AppFormats.dateToFormat(months[actualIndex]).capitalize()}",
         isDanger: isDanger,
       ),
       body: Container(
@@ -132,47 +143,59 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           initialIndex: actualIndex,
           length: months.length,
           buildTabBar: (_, index) {
-            String date = DateFormat('MMM/yy', 'pt_BR')
-                .format(months[index])
-                .toUpperCase();
-
+            String date =
+                AppFormats.dateToFormat(months[index], 'MMM/yy').toUpperCase();
             return Text(date);
           },
           buildTabView: (_, index) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 18, right: 18, top: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        ResumeMoneyWidget(label: 'entradas', value: 1900),
-                        ResumeMoneyWidget(label: 'saídas', value: -1800),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Divider(color: AppColors.whiteDesable, thickness: 2),
-                  const Center(
-                    child: ResumeMoneyWidget(
-                      label: 'balanço',
-                      value: 100,
-                      center: true,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  BalanceTabViewWidget(
-                    inputBalances: mockBalances,
-                    outputBalances: mockBalances,
-                    onChangePage: _handleChangeBalance,
-                  ),
-                ],
-              ),
-            );
+            return FutureBuilder(
+                future: AppStorage.getBalances(
+                    AppStorage.getKeyMonth(months[actualIndex])),
+                builder: (ctx, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '${snapshot.error} occured',
+                        style:
+                            AppTextStyles.h6Regular(color: AppColors.secondary),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    // Extracting data from snapshot object
+                    final data = snapshot.data as dynamic;
+                    final typeInput =
+                        EnumToString.convertToString(TypeBalance.inputs)
+                            .capitalize();
+                    final typeOutput =
+                        EnumToString.convertToString(TypeBalance.outputs)
+                            .capitalize();
+                    final dataInput = data["$typeInput"];
+                    final dataOutput = data["$typeOutput"];
+
+                    List<BalanceModel> balancesInputsMonths = dataInput != null
+                        ? listBalancesModelFromJson(json.encode(dataInput))
+                        : [];
+                    List<BalanceModel> balancesOutputsMonths =
+                        dataOutput != null
+                            ? listBalancesModelFromJson(json.encode(dataOutput))
+                            : [];
+
+                    // print("data $data");
+                    return DetailMonthWidget(
+                      inputBalances: balancesInputsMonths,
+                      outputBalances: balancesOutputsMonths,
+                      valorEntradas: balancesInputsMonths.fold(
+                          0, (acum, balance) => acum + balance.value),
+                      valorSaidas: balancesOutputsMonths.fold(
+                          0, (acum, balance) => acum + balance.value),
+                      actualMonth: months[actualIndex],
+                    );
+                  }
+                  return const DetailMonthWidget();
+                  // return Center(
+                  //   child: CircularProgressIndicator(),
+                  // );
+                });
           },
           onChangePage: _handleChangeMonth,
         ),

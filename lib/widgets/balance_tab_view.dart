@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
+import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/enuns.dart';
+import 'package:plans_gastos/utils/storage.dart';
 import 'package:plans_gastos/widgets/item_balance.dart';
 
 class BalanceTabViewWidget extends StatefulWidget {
-  final List<ItemBalance> inputBalances;
-  final List<ItemBalance> outputBalances;
+  final List<BalanceModel> inputBalances;
+  final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
+  final DateTime? actualMonth;
 
   const BalanceTabViewWidget({
     Key? key,
+    this.actualMonth,
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
@@ -79,7 +84,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
     );
   }
 
-  Widget _buildBalances(List<ItemBalance> balances, [bool isOutput = false]) {
+  Widget _buildBalances(List<BalanceModel> balances, [bool isOutput = false]) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -87,20 +92,55 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
           top: Radius.circular(16),
         ),
       ),
-      child: ListView.separated(
+      child: ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          separatorBuilder: (_, __) => const Divider(
-                color: AppColors.grayLight,
-                height: 5,
-              ),
           itemCount: balances.length,
           itemBuilder: (_, index) {
-            ItemBalance balance = balances[index];
-            return ItemBalanceWidget(
-              name: balance.title,
-              value: balance.value,
-              danger: isOutput,
+            BalanceModel balance = balances[index];
+            return Dismissible(
+              key: Key(balance.uuid),
+              child: Column(
+                children: [
+                  ItemBalanceWidget(
+                    name: balance.title,
+                    value: balance.value,
+                    danger: isOutput,
+                  ),
+                  if (index != balances.length)
+                    const Divider(
+                      color: AppColors.grayLight,
+                      height: 0,
+                    )
+                ],
+              ),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(index == 0 ? 16 : 0),
+                  ),
+                  color: AppColors.secondary,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text("Excluir", style: AppTextStyles.h6SemiBold()),
+                      const SizedBox(width: 8),
+                      const Icon(FeatherIcons.trash, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ),
+              onDismissed: (_) {
+                if (widget.actualMonth != null) {
+                  AppStorage.deleteBalance(
+                      balance, AppStorage.getKeyMonth(widget.actualMonth!));
+                }
+              },
             );
           }),
     );
