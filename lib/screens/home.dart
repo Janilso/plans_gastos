@@ -1,10 +1,24 @@
+import 'dart:convert';
+
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
-import 'package:plans_gastos/utils/infinite_tab_view.dart';
-import 'package:plans_gastos/widgets/custom_app_bar.dart';
+import 'package:plans_gastos/theme/app_text_styles.dart';
+import 'package:plans_gastos/utils/enuns.dart';
+import 'package:plans_gastos/utils/formats.dart';
+import 'package:plans_gastos/utils/storage.dart';
+import 'package:plans_gastos/widgets/add_balance.dart';
+import 'package:plans_gastos/widgets/balance_tab_view.dart';
+import 'package:plans_gastos/widgets/detail_month.dart';
+import 'package:plans_gastos/widgets/infinite_tab_view.dart';
+import 'package:plans_gastos/utils/mocks.dart';
+import 'package:plans_gastos/widgets/app_bar.dart';
 import "package:plans_gastos/utils/string_extension.dart";
+import 'package:plans_gastos/widgets/resume_money.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,12 +29,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   DateTime dateNow = DateTime.now();
-  String dateNowFormat =
-      DateFormat('MMMM yyyy', 'pt_BR').format(DateTime.now());
-
   List<DateTime> months = [];
   int initialNextsPrevsMonths = 12;
-  late int initialIndex;
+  late int actualIndex;
+  List<BalanceModel> mockBalances = Mocks.mockListItemBalice;
+  TypeBalance typeBalancePage = TypeBalance.inputs;
 
   @override
   void initState() {
@@ -30,29 +43,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       dateNow,
       ...getMoths(initialNextsPrevsMonths, dateNow)
     ];
-    initialIndex = months.indexWhere((date) =>
+    actualIndex = months.indexWhere((date) =>
         date.year == dateNow.year &&
         date.month == dateNow.month &&
         date.day == dateNow.day);
+    //     const
+    // balancesInputsMonths = listBalancesModelFromJson()
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  TabController getTabController(List<DateTime> newMonths,
-      {int? initialIndex}) {
-    return initialIndex != null
-        ? TabController(
-            length: newMonths.length,
-            vsync: this,
-            initialIndex: initialIndex,
-          )
-        : TabController(
-            length: newMonths.length,
-            vsync: this,
-          );
   }
 
   getMoths(int quantidade, DateTime date,
@@ -71,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   void _handleChangeMonth([int index = 0]) {
     late final List<DateTime> newMonths;
+    int newInitialIndex = index;
     DateTime actualMonth = months[index];
     bool isChange = index == (months.length - 4);
 
@@ -85,43 +87,123 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               )
             : []
       ];
-      int newInitialIndex = newMonths.indexWhere((date) =>
+      newInitialIndex = newMonths.indexWhere((date) =>
           date.year == actualMonth.year &&
           date.month == actualMonth.month &&
           date.day == actualMonth.day);
-
-      setState(() {
-        months = newMonths;
-        initialIndex = newInitialIndex;
-      });
     }
+    setState(() {
+      if (isChange) {
+        months = newMonths;
+      }
+      actualIndex = newInitialIndex;
+    });
+  }
+
+  void _handleChangeBalance(TypeBalance typeBalance) {
+    setState(() {
+      typeBalancePage = typeBalance;
+    });
+  }
+
+  void _handleAddBalance(TypeBalance typeBalance) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (_) => AddBalanceWidget(
+        typeBalance: typeBalance,
+        actualMonth: months[actualIndex],
+        onAdded: () {
+          setState(() {});
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDanger = typeBalancePage == TypeBalance.outputs;
+    String titlePage = isDanger ? 'SAÍDAS' : 'ENTRADAS';
+    Color colorState = isDanger ? AppColors.secondary : AppColors.primary;
+
     return Scaffold(
-      appBar: CustomAppBar(title: "ENTRADAS -  ${dateNowFormat.capitalize()}"),
+      appBar: AppBarWidget(
+        title:
+            "$titlePage - ${AppFormats.dateToFormat(months[actualIndex]).capitalize()}",
+        isDanger: isDanger,
+      ),
       body: Container(
-        color: AppColors.primary,
+        color: colorState,
         child: InfiniteTabView(
-          initialIndex: initialIndex,
+          initialIndex: actualIndex,
           length: months.length,
           buildTabBar: (_, index) {
-            String date = DateFormat('MMM/yy', 'pt_BR')
-                .format(months[index])
-                .toUpperCase();
+            String date =
+                AppFormats.dateToFormat(months[index], 'MMM/yy').toUpperCase();
             return Text(date);
           },
           buildTabView: (_, index) {
-            return const Center(
-              child: Text(
-                'This is  tab',
-                style: TextStyle(fontSize: 36),
-              ),
-            );
+            return FutureBuilder(
+                future: AppStorage.getBalances(
+                    AppStorage.getKeyMonth(months[actualIndex])),
+                builder: (ctx, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        '${snapshot.error} occured',
+                        style:
+                            AppTextStyles.h6Regular(color: AppColors.secondary),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    // Extracting data from snapshot object
+                    final data = snapshot.data as dynamic;
+                    final typeInput =
+                        EnumToString.convertToString(TypeBalance.inputs)
+                            .capitalize();
+                    final typeOutput =
+                        EnumToString.convertToString(TypeBalance.outputs)
+                            .capitalize();
+                    final dataInput = data["$typeInput"];
+                    final dataOutput = data["$typeOutput"];
+
+                    List<BalanceModel> balancesInputsMonths = dataInput != null
+                        ? listBalancesModelFromJson(json.encode(dataInput))
+                        : [];
+                    List<BalanceModel> balancesOutputsMonths =
+                        dataOutput != null
+                            ? listBalancesModelFromJson(json.encode(dataOutput))
+                            : [];
+
+                    // print("data $data");
+                    return DetailMonthWidget(
+                      inputBalances: balancesInputsMonths,
+                      outputBalances: balancesOutputsMonths,
+                      valorEntradas: balancesInputsMonths.fold(
+                          0, (acum, balance) => acum + balance.value),
+                      valorSaidas: balancesOutputsMonths.fold(
+                          0, (acum, balance) => acum + balance.value),
+                      actualMonth: months[actualIndex],
+                    );
+                  }
+                  return const DetailMonthWidget();
+                  // return Center(
+                  //   child: CircularProgressIndicator(),
+                  // );
+                });
           },
           onChangePage: _handleChangeMonth,
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _handleAddBalance(typeBalancePage),
+        child: const Icon(FeatherIcons.plus),
+        backgroundColor: colorState,
       ),
     );
   }

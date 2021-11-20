@@ -36,11 +36,16 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^0.23.0+1
   intl: ^0.17.0
+  flutter_feather_icons: ^2.0.0+1
+  flutter_masked_text: ^0.8.0
+  enum_to_string: ^2.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
+  uuid: ^3.0.5
+  shared_preferences: ^2.0.9
 
 flutter:
   uses-material-design: true

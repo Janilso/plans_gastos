@@ -3,36 +3,27 @@ import 'package:flutter/widgets.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final Color backgroundColor;
+  final bool isDanger;
 
   @override
   final Size preferredSize;
 
-  const CustomAppBar({
+  const AppBarWidget({
     Key? key,
     required this.title,
     this.preferredSize = const Size.fromHeight(48.0),
-    this.backgroundColor = AppColors.primary,
+    this.isDanger = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Color color = isDanger ? AppColors.secondary : AppColors.primary;
     return PreferredSize(
       preferredSize: preferredSize,
       child: Container(
-        decoration: BoxDecoration(
-          // boxShadow: [
-          //   BoxShadow(
-          //     color: Colors.black.withOpacity(0.15),
-          //     offset: const Offset(0, 5.0),
-          //     blurRadius: 15,
-          //     spreadRadius: 2,
-          //   )
-          // ],
-          color: backgroundColor,
-        ),
+        color: color,
         child: AppBar(
           elevation: 6,
           shadowColor: Colors.black.withOpacity(0.4),
@@ -41,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: const EdgeInsets.only(top: 10),
             child: Text(
               title,
-              style: AppTextStyles.h6Regular(color: AppColors.primary),
+              style: AppTextStyles.h6Regular(color: color),
             ),
           ),
           centerTitle: true,

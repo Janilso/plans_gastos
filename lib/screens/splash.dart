@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:plans_gastos/screens/home.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
-import 'package:plans_gastos/widgets/imagens.dart';
+import 'package:plans_gastos/utils/imagens.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
