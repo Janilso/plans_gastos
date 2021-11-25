@@ -161,7 +161,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     );
                   } else if (snapshot.hasData) {
-                    // Extracting data from snapshot object
                     final data = snapshot.data as dynamic;
                     final typeInput =
                         EnumToString.convertToString(TypeBalance.inputs)
@@ -184,14 +183,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     return DetailMonthWidget(
                       inputBalances: balancesInputsMonths,
                       outputBalances: balancesOutputsMonths,
-                      valorEntradas: balancesInputsMonths.fold(
-                          0, (acum, balance) => acum + balance.value),
-                      valorSaidas: balancesOutputsMonths.fold(
-                          0, (acum, balance) => acum + balance.value),
+                      // valorEntradas: balancesInputsMonths.fold(
+                      //     0, (acum, balance) => acum + balance.value),
+                      // valorSaidas: balancesOutputsMonths.fold(
+                      //     0, (acum, balance) => acum + balance.value),
                       actualMonth: months[actualIndex],
+                      onChangePage: _handleChangeBalance,
                     );
                   }
-                  return const DetailMonthWidget();
+                  return DetailMonthWidget(
+                    onChangePage: _handleChangeBalance,
+                  );
                   // return Center(
                   //   child: CircularProgressIndicator(),
                   // );

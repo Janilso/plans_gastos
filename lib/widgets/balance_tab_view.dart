@@ -13,6 +13,7 @@ class BalanceTabViewWidget extends StatefulWidget {
   final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
   final DateTime? actualMonth;
+  final void Function(BalanceModel balanceRemoved)? onRemoveItem;
 
   const BalanceTabViewWidget({
     Key? key,
@@ -20,6 +21,7 @@ class BalanceTabViewWidget extends StatefulWidget {
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
+    this.onRemoveItem,
   }) : super(key: key);
 
   @override
@@ -99,7 +101,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
           itemBuilder: (_, index) {
             BalanceModel balance = balances[index];
             return Dismissible(
-              key: Key(balance.uuid),
+              key: UniqueKey(),
               child: Column(
                 children: [
                   ItemBalanceWidget(
@@ -139,6 +141,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                 if (widget.actualMonth != null) {
                   AppStorage.deleteBalance(
                       balance, AppStorage.getKeyMonth(widget.actualMonth!));
+                  widget.onRemoveItem!(balance);
                 }
               },
             );
