@@ -2,7 +2,7 @@
     package="com.example.plans_gastos">
    <application
         android:label="plans_gastos"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
