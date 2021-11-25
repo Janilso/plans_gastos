@@ -6,14 +6,16 @@ import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/widgets/balance_tab_view.dart';
 import 'package:plans_gastos/widgets/resume_money.dart';
+import 'package:collection/collection.dart';
 
-class DetailMonthWidget extends StatelessWidget {
+class DetailMonthWidget extends StatefulWidget {
   final List<BalanceModel> inputBalances;
   final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
-  final double valorEntradas;
-  final double valorSaidas;
+  // final double valorEntradas;
+  // final double valorSaidas;
   final DateTime? actualMonth;
+  // final void Function(TypeBalance? typeBalanceRemoved)? onRemoveItem;
 
   const DetailMonthWidget({
     Key? key,
@@ -21,9 +23,80 @@ class DetailMonthWidget extends StatelessWidget {
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
-    this.valorEntradas = 0,
-    this.valorSaidas = 0,
+    // this.valorEntradas = 0,
+    // this.valorSaidas = 0,
+    // this.onRemoveItem,
   }) : super(key: key);
+
+  @override
+  State<DetailMonthWidget> createState() => _DetailMonthWidgetState();
+}
+
+class _DetailMonthWidgetState extends State<DetailMonthWidget> {
+  double valorEntradas = 0;
+  double valorSaidas = 0;
+  List<BalanceModel> stateInputBalances = [];
+  List<BalanceModel> stateOutputBalances = [];
+
+  @override
+  void didUpdateWidget(covariant DetailMonthWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    bool changeListInput = const ListEquality()
+        .equals(oldWidget.inputBalances, stateInputBalances);
+    bool changeListOutput = const ListEquality()
+        .equals(oldWidget.outputBalances, stateOutputBalances);
+
+    if (changeListInput || changeListOutput) {
+      List valuesBalance =
+          _calValuesBalance(widget.inputBalances, widget.outputBalances);
+      setState(() {
+        valorEntradas = valuesBalance[0];
+        valorSaidas = valuesBalance[1];
+        stateInputBalances = widget.inputBalances;
+        stateOutputBalances = widget.outputBalances;
+      });
+    }
+  }
+
+  List _calValuesBalance(List<BalanceModel> listInputBalances,
+      List<BalanceModel> listOutputBalances) {
+    double entradas =
+        listInputBalances.fold(0, (acum, balance) => acum + balance.value);
+    double saidas =
+        listOutputBalances.fold(0, (acum, balance) => acum + balance.value);
+    return [entradas, saidas];
+  }
+
+  _handleRemovebalace(BalanceModel balanceRemoved) {
+    if (balanceRemoved.type == TypeBalance.inputs) {
+      stateInputBalances
+          .removeWhere((BalanceModel item) => balanceRemoved.uuid == item.uuid);
+      List<BalanceModel> newListInputBalances = stateInputBalances;
+
+      List valuesBalance =
+          _calValuesBalance(newListInputBalances, stateOutputBalances);
+
+      setState(() {
+        stateInputBalances = newListInputBalances;
+        valorEntradas = valuesBalance[0];
+        valorSaidas = valuesBalance[1];
+      });
+    } else {
+      stateOutputBalances
+          .removeWhere((BalanceModel item) => balanceRemoved.uuid == item.uuid);
+      List<BalanceModel> newlistOutputBalances = stateOutputBalances;
+
+      List valuesBalance =
+          _calValuesBalance(stateInputBalances, newlistOutputBalances);
+      setState(() {
+        stateOutputBalances = newlistOutputBalances;
+        valorEntradas = valuesBalance[0];
+        valorSaidas = valuesBalance[1];
+      });
+
+      // _calValuesBalance(stateInputBalances, newlistOutputBalances);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +127,11 @@ class DetailMonthWidget extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           BalanceTabViewWidget(
-            inputBalances: inputBalances,
-            outputBalances: outputBalances,
-            onChangePage: onChangePage,
-            actualMonth: actualMonth,
+            inputBalances: widget.inputBalances,
+            outputBalances: widget.outputBalances,
+            onChangePage: widget.onChangePage,
+            actualMonth: widget.actualMonth,
+            onRemoveItem: _handleRemovebalace,
           ),
         ],
       ),
