@@ -93,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         months = newMonths;
       }
       actualIndex = newInitialIndex;
+      typeBalancePage = TypeBalance.inputs;
     });
   }
 
