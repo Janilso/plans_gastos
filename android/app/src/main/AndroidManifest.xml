@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.plans_gastos">
+    package="com.janilsorodrigues.plans_gastos">
    <application
         android:label="Plans Gastos"
         android:icon="@mipmap/launcher_icon">

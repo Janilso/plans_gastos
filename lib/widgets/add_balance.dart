@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
@@ -119,7 +118,7 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
               const SizedBox(height: 32),
               ButtonWidget(
                 text: 'Salvar',
-                icon: FeatherIcons.send,
+                icon: Icons.send,
                 loading: loadingSave,
                 color: widget.typeBalance == TypeBalance.inputs
                     ? AppColors.primary

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
@@ -132,7 +131,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                     children: [
                       Text("Excluir", style: AppTextStyles.h6SemiBold()),
                       const SizedBox(width: 8),
-                      const Icon(FeatherIcons.trash, color: Colors.white),
+                      const Icon(Icons.delete_outline, color: Colors.white),
                     ],
                   ),
                 ),

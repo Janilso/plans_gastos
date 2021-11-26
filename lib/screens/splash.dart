@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:plans_gastos/screens/home.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
@@ -41,7 +40,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
         child: ListView(
           shrinkWrap: true,
           children: [
-            SvgPicture.asset(ImagesAssets.logo),
+            Image.asset(ImagesAssets.logo),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

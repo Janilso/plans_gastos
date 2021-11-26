@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/formats.dart';
@@ -29,7 +28,7 @@ class ItemBalanceWidget extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(35)),
           ),
           child: Icon(
-            FeatherIcons.dollarSign,
+            Icons.monetization_on_outlined,
             size: 20,
             color: danger ? AppColors.secondary : AppColors.primary,
           )),

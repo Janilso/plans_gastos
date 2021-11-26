@@ -1,5 +1,5 @@
 class ImagesAssets {
-  static String logo = 'assets/images/logo.svg';
+  static String logo = 'assets/images/logo.png';
   // static String logoVC = 'assets/img/umadcac-vertical-color.png';
   // static String logoHW = 'assets/img/umadcac-horizontal-white.png';
   // static String logoHC = 'assets/img/umadcac-horizontal-color.png';

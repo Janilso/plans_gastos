@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
@@ -12,13 +10,11 @@ import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/formats.dart';
 import 'package:plans_gastos/utils/storage.dart';
 import 'package:plans_gastos/widgets/add_balance.dart';
-import 'package:plans_gastos/widgets/balance_tab_view.dart';
 import 'package:plans_gastos/widgets/detail_month.dart';
 import 'package:plans_gastos/widgets/infinite_tab_view.dart';
 import 'package:plans_gastos/utils/mocks.dart';
 import 'package:plans_gastos/widgets/app_bar.dart';
 import "package:plans_gastos/utils/string_extension.dart";
-import 'package:plans_gastos/widgets/resume_money.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -183,10 +179,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     return DetailMonthWidget(
                       inputBalances: balancesInputsMonths,
                       outputBalances: balancesOutputsMonths,
-                      // valorEntradas: balancesInputsMonths.fold(
-                      //     0, (acum, balance) => acum + balance.value),
-                      // valorSaidas: balancesOutputsMonths.fold(
-                      //     0, (acum, balance) => acum + balance.value),
                       actualMonth: months[actualIndex],
                       onChangePage: _handleChangeBalance,
                     );
@@ -204,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _handleAddBalance(typeBalancePage),
-        child: const Icon(FeatherIcons.plus),
+        child: const Icon(Icons.add),
         backgroundColor: colorState,
       ),
     );
