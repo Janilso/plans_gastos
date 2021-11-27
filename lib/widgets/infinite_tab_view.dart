@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:plans_gastos/widgets/custom_tab_bar_view_scroll_physics.dart';
 
 // typedef WidgetBuilder = String Function(BuildContext context, int index);
 
@@ -87,6 +88,7 @@ class _InfiniteTabViewState extends State<InfiniteTabView>
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const CustomTabBarViewScrollPhysics(),
               children: List.generate(
                 widget.length,
                 (index) {

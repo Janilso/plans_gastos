@@ -126,7 +126,7 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
                 onPressed: _handleSaveBalance,
                 // width: ,
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 18),
             ],
           ),
         ),
