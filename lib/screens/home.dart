@@ -106,6 +106,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _handleAddBalance(TypeBalance typeBalance) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      elevation: 5,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
