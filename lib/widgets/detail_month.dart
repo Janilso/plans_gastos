@@ -111,8 +111,8 @@ class _DetailMonthWidgetState extends State<DetailMonthWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ResumeMoneyWidget(label: 'entradas', value: valorEntradas),
-                ResumeMoneyWidget(label: 'saídas', value: valorSaidas),
+                ResumeMoneyWidget(label: 'GANHOS', value: valorEntradas),
+                ResumeMoneyWidget(label: 'GASTOS', value: valorSaidas),
               ],
             ),
           ),

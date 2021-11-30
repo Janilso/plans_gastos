@@ -69,8 +69,8 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
               dragStartBehavior: DragStartBehavior.down,
               isScrollable: true,
               tabs: const [
-                Tab(icon: Text('ENTRADAS')),
-                Tab(icon: Text('SAÍDAS')),
+                Tab(icon: Text('GANHOS')),
+                Tab(icon: Text('GASTOS')),
               ],
             ),
           ),

@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     bool isDanger = typeBalancePage == TypeBalance.outputs;
-    String titlePage = isDanger ? 'SAÍDAS' : 'ENTRADAS';
+    String titlePage = isDanger ? 'GASTOS' : 'GANHOS';
     Color colorState = isDanger ? AppColors.secondary : AppColors.primary;
 
     return Scaffold(

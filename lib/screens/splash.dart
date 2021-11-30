@@ -16,14 +16,14 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   @override
   void initState() {
-    // Timer(
-    //     const Duration(milliseconds: 2000),
-    //     () => {
-    //           Navigator.pushReplacement(
-    //             context,
-    //             CupertinoPageRoute(builder: (context) => const HomeScreen()),
-    //           )
-    //         });
+    Timer(
+        const Duration(milliseconds: 2000),
+        () => {
+              Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute(builder: (context) => const HomeScreen()),
+              )
+            });
     super.initState();
   }
 
