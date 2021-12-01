@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
@@ -18,6 +19,7 @@ class InputWidget extends StatelessWidget {
   final TypeInput type;
   final TypeBalance typeBalance;
   final bool valueSWitch;
+  final List<TextInputFormatter>? inputFormatters;
 
   const InputWidget({
     Key? key,
@@ -33,6 +35,7 @@ class InputWidget extends StatelessWidget {
     this.type = TypeInput.text,
     this.typeBalance = TypeBalance.inputs,
     this.valueSWitch = false,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
@@ -62,6 +65,7 @@ class InputWidget extends StatelessWidget {
                 flex: 4,
                 child: type == TypeInput.text
                     ? TextFormField(
+                        inputFormatters: inputFormatters,
                         autofocus: autofocus,
                         decoration: InputDecoration(
                           alignLabelWithHint: true,

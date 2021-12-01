@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+// import 'package:flutter_masked_text/flutter_masked_text.dart';
+// import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/utils/enuns.dart';
@@ -32,7 +37,20 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
   bool loadingSave = false;
   final TextEditingController _ctlNome = TextEditingController();
   final TextEditingController _ctlValor = MoneyMaskedTextController(
-      decimalSeparator: ',', thousandSeparator: '.', leftSymbol: 'R\$ ');
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+    leftSymbol: 'R\$ ',
+  );
+
+  final TextEditingController _ctlParcelas = TextEditingController(text: '1');
+  // final TextEditingController _ctlParcelas = MoneyMaskedTextController(
+  //   decimalSeparator: '',
+  //   thousandSeparator: '',
+  //   leftSymbol: '',
+  //   rightSymbol: 'x',
+  //   // initialValue: 1,
+  //   precision: 0,
+  // );
 
   AutovalidateMode _autovalidate = AutovalidateMode.disabled;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -42,16 +60,43 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
     if (!form!.validate()) {
       setState(() => _autovalidate = AutovalidateMode.always);
     } else {
-      BalanceModel newBalance = BalanceModel(
-        title: _ctlNome.text,
-        type: widget.typeBalance,
-        uuid: const Uuid().v4(),
-        value: AppFormats.stringMoneyToDouble(_ctlValor.text),
-        realized: valueSWitch,
-      );
-      // AppStorage.clear();
-      AppStorage.addBalance(
-          newBalance, AppStorage.getKeyMonth(widget.actualMonth));
+      print('_ctlParcelas ${_ctlParcelas.text}');
+      int parcelas = int.parse(_ctlParcelas.text);
+      double valorTotal = AppFormats.stringMoneyToDouble(_ctlValor.text);
+      late BalanceModel firstBalance;
+      for (int i = 1; i <= parcelas; i++) {
+        if (i == 1) {
+          firstBalance = BalanceModel(
+            title: _ctlNome.text,
+            type: widget.typeBalance,
+            uuid: const Uuid().v4(),
+            value: valorTotal / parcelas,
+            valueTotal: valorTotal,
+            numberInstallments: parcelas,
+            realized: valueSWitch,
+            installment: i,
+          );
+          AppStorage.addBalance(
+              firstBalance, AppStorage.getKeyMonth(widget.actualMonth));
+        } else {
+          BalanceModel newBalance = BalanceModel(
+            title: _ctlNome.text,
+            type: widget.typeBalance,
+            uuid: const Uuid().v4(),
+            value: valorTotal / parcelas,
+            valueTotal: valorTotal,
+            numberInstallments: parcelas,
+            realized: valueSWitch,
+            installment: i,
+            uuidParent: firstBalance.uuid,
+          );
+          DateTime actualMonth = widget.actualMonth;
+          DateTime monthSave = DateTime(
+              actualMonth.year, actualMonth.month + (i - 1), actualMonth.day);
+          AppStorage.addBalance(newBalance, AppStorage.getKeyMonth(monthSave));
+        }
+      }
+
       widget.onAdded!();
       Navigator.pop(context);
     }
@@ -90,8 +135,8 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
                 controller: _ctlNome,
                 labelText: 'Nome',
                 hintText: widget.typeBalance == TypeBalance.inputs
-                    ? 'Nome da entrada'
-                    : 'Nome da saída',
+                    ? 'Nome do ganho'
+                    : 'Nome do gasto',
                 autofocus: true,
                 validator: AppValidations.defaultValidate,
                 typeBalance: widget.typeBalance,
@@ -99,6 +144,7 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
               const SizedBox(height: 8),
               InputWidget(
                 controller: _ctlValor,
+                // inputFormatters: [_ctlValor],
                 labelText: 'Valor',
                 typeBalance: widget.typeBalance,
                 validator: AppValidations.money,
@@ -114,6 +160,18 @@ class _AddBalanceWidgetState extends State<AddBalanceWidget> {
                 valueSWitch: valueSWitch,
                 type: TypeInput.switchh,
                 typeBalance: widget.typeBalance,
+              ),
+              const SizedBox(height: 8),
+              InputWidget(
+                controller: _ctlParcelas,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r"[0-9]+")),
+                ],
+                labelText: 'Parcela(s)',
+                valueSWitch: valueSWitch,
+                // type: TypeInput.,
+                typeBalance: widget.typeBalance,
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 32),
               ButtonWidget(

@@ -79,7 +79,6 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
             margin: const EdgeInsets.only(top: 12),
             child: TabBarView(
               controller: _tabController,
-              // physics: NeverScrollableScrollPhysics(),
               physics: const CustomTabBarViewScrollPhysics(),
               children: [
                 _buildBalances(widget.inputBalances),
@@ -111,15 +110,15 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
               child: Column(
                 children: [
                   ItemBalanceWidget(
-                    name: balance.title,
+                    name: balance.numberInstallments != null &&
+                            balance.numberInstallments > 1
+                        ? '${balance.title} - ${balance.installment}/${balance.numberInstallments}'
+                        : balance.title,
                     value: balance.value,
                     danger: isOutput,
                   ),
                   if (index != balances.length)
-                    const Divider(
-                      color: AppColors.grayLight,
-                      height: 0,
-                    )
+                    const Divider(color: AppColors.grayLight, height: 0)
                 ],
               ),
               direction: DismissDirection.endToStart,

@@ -12,7 +12,7 @@ import 'package:plans_gastos/utils/storage.dart';
 import 'package:plans_gastos/widgets/add_balance.dart';
 import 'package:plans_gastos/widgets/detail_month.dart';
 import 'package:plans_gastos/widgets/infinite_tab_view.dart';
-import 'package:plans_gastos/utils/mocks.dart';
+// import 'package:plans_gastos/utils/mocks.dart';
 import 'package:plans_gastos/widgets/app_bar.dart';
 import "package:plans_gastos/utils/string_extension.dart";
 
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<DateTime> months = [];
   int initialNextsPrevsMonths = 12;
   late int actualIndex;
-  List<BalanceModel> mockBalances = Mocks.mockListItemBalice;
+  // List<BalanceModel> mockBalances = Mocks.mockListItemBalice;
   TypeBalance typeBalancePage = TypeBalance.inputs;
 
   @override
