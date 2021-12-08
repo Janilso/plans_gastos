@@ -41,7 +41,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
   late bool valueSWitch;
   late TextEditingController _ctlNome;
   late TextEditingController _ctlValor;
-  late TextEditingController _ctlParcelas;
+  late int _ctlParcelas;
   AutovalidateMode _autovalidate = AutovalidateMode.disabled;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -57,9 +57,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
       leftSymbol: 'R\$ ',
     );
     editing = balanceEdit != null;
-    _ctlParcelas = TextEditingController(
-      text: editing ? balanceEdit?.numberInstallments.toString() : '1',
-    );
+    _ctlParcelas = editing ? balanceEdit?.numberInstallments ?? 1 : 1;
     valueSWitch = balanceEdit != null ? balanceEdit!.realized : false;
   }
 
@@ -102,7 +100,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
   }
 
   _handleSave() {
-    int parcelas = int.parse(_ctlParcelas.text);
+    int parcelas = _ctlParcelas;
     double valorTotal = AppFormats.stringMoneyToDouble(_ctlValor.text);
     _saveInStorge(parcelas, valorTotal);
     widget.onAdded!();
@@ -196,7 +194,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
   }
 
   _handleEdit() {
-    int parcelas = int.parse(_ctlParcelas.text);
+    int parcelas = _ctlParcelas;
     double valorTotal = AppFormats.stringMoneyToDouble(_ctlValor.text);
 
     if (balanceEdit!.numberInstallments == parcelas && parcelas <= 1) {
@@ -336,15 +334,16 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
               ),
               const SizedBox(height: 8),
               InputWidget(
-                controller: _ctlParcelas,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r"[0-9]+")),
-                ],
                 labelText: 'Parcela(s)',
                 valueSWitch: valueSWitch,
-                // type: TypeInput.,
                 typeBalance: widget.typeBalance,
                 keyboardType: TextInputType.number,
+                type: TypeInput.spin,
+                onChange: (value) {
+                  setState(() {
+                    _ctlParcelas = value.toInt();
+                  });
+                },
               ),
               const SizedBox(height: 32),
               ButtonWidget(

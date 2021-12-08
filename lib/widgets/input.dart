@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/enuns.dart';
@@ -40,12 +41,6 @@ class InputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDanger = typeBalance == TypeBalance.outputs;
-    Color inputStateColor = isDanger ? AppColors.secondary : AppColors.primary;
-    UnderlineInputBorder disabledBorder = const UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.transparent),
-    );
-
     return SingleChildScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(
@@ -61,55 +56,82 @@ class InputWidget extends StatelessWidget {
                       style: AppTextStyles.h6Regular(color: AppColors.black)),
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: type == TypeInput.text
-                    ? TextFormField(
-                        inputFormatters: inputFormatters,
-                        autofocus: autofocus,
-                        decoration: InputDecoration(
-                          alignLabelWithHint: true,
-                          fillColor: fillColor,
-                          hintText: hintText,
-                          hintStyle: AppTextStyles.h6Regular(
-                            color: AppColors.black.withOpacity(0.3),
-                          ),
-                          enabledBorder: disabledBorder,
-                          focusedBorder: disabledBorder,
-                          errorBorder: disabledBorder,
-                          focusedErrorBorder: disabledBorder,
-                        ),
-                        // style: enabled ? textStyle : textStyleDisabled,
-                        controller: controller,
-                        keyboardType: keyboardType,
-                        validator: validator,
-                        onChanged: onChange,
-                        enabled: enabled,
-                        cursorColor: inputStateColor,
-                        textAlign: TextAlign.right,
-                        style: AppTextStyles.h6Regular(color: inputStateColor),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Switch(
-                            value: valueSWitch,
-                            onChanged: onChange,
-                            activeTrackColor: isDanger
-                                ? AppColors.secondary.withOpacity(0.4)
-                                : AppColors.primary.withOpacity(0.4),
-                            activeColor: isDanger
-                                ? AppColors.secondary
-                                : AppColors.primary,
-                          ),
-                        ],
-                      ),
-              )
+              Expanded(flex: 4, child: _buildInput())
             ],
           ),
           const Divider(color: AppColors.grayLight, endIndent: 2),
         ],
       ),
     );
+  }
+
+  Widget _buildInput() {
+    bool isDanger = typeBalance == TypeBalance.outputs;
+
+    Color inputStateColor = isDanger ? AppColors.secondary : AppColors.primary;
+    UnderlineInputBorder disabledBorder = const UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.transparent),
+    );
+    if (type == TypeInput.text) {
+      return TextFormField(
+        inputFormatters: inputFormatters,
+        autofocus: autofocus,
+        decoration: InputDecoration(
+          alignLabelWithHint: true,
+          fillColor: fillColor,
+          hintText: hintText,
+          hintStyle: AppTextStyles.h6Regular(
+            color: AppColors.black.withOpacity(0.3),
+          ),
+          enabledBorder: disabledBorder,
+          focusedBorder: disabledBorder,
+          errorBorder: disabledBorder,
+          focusedErrorBorder: disabledBorder,
+        ),
+        controller: controller,
+        keyboardType: keyboardType,
+        validator: validator,
+        onChanged: onChange,
+        enabled: enabled,
+        cursorColor: inputStateColor,
+        textAlign: TextAlign.right,
+        style: AppTextStyles.h6Regular(color: inputStateColor),
+      );
+    } else if (type == TypeInput.switchh) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Switch(
+            value: valueSWitch,
+            onChanged: onChange,
+            activeTrackColor: isDanger
+                ? AppColors.secondary.withOpacity(0.4)
+                : AppColors.primary.withOpacity(0.4),
+            activeColor: isDanger ? AppColors.secondary : AppColors.primary,
+          ),
+        ],
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(left: 90),
+        child: CupertinoSpinBox(
+          min: 1,
+          max: 20,
+          value: 1,
+          onChanged: onChange,
+          textStyle: AppTextStyles.h6Regular(color: AppColors.black),
+          decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+          cursorColor: Colors.red,
+          incrementIcon: Icon(
+            Icons.add,
+            color: inputStateColor,
+          ),
+          decrementIcon: Icon(
+            Icons.horizontal_rule_sharp,
+            color: inputStateColor,
+          ),
+        ),
+      );
+    }
   }
 }
