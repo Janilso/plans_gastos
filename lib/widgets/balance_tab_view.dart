@@ -147,6 +147,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                           : balance.title,
                       value: balance.value,
                       danger: isOutput,
+                      dot: balance.realized,
                     ),
                   ),
                   if (index != balances.length)
