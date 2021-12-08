@@ -12,10 +12,8 @@ class DetailMonthWidget extends StatefulWidget {
   final List<BalanceModel> inputBalances;
   final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
-  // final double valorEntradas;
-  // final double valorSaidas;
+
   final DateTime? actualMonth;
-  // final void Function(TypeBalance? typeBalanceRemoved)? onRemoveItem;
 
   const DetailMonthWidget({
     Key? key,
@@ -23,9 +21,6 @@ class DetailMonthWidget extends StatefulWidget {
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
-    // this.valorEntradas = 0,
-    // this.valorSaidas = 0,
-    // this.onRemoveItem,
   }) : super(key: key);
 
   @override
@@ -98,6 +93,43 @@ class _DetailMonthWidgetState extends State<DetailMonthWidget> {
     }
   }
 
+  _handleEditbalace(BalanceModel oldBalance, BalanceModel? balanceEdited) {
+    if (oldBalance.type == TypeBalance.inputs) {
+      int indexPrevBalance = stateInputBalances
+          .indexWhere((BalanceModel item) => oldBalance.uuid == item.uuid);
+      if (balanceEdited != null) {
+        stateInputBalances[indexPrevBalance] = balanceEdited;
+      } else {
+        stateInputBalances.removeAt(indexPrevBalance);
+      }
+      List<BalanceModel> newListInputBalances = stateInputBalances;
+      List valuesBalance =
+          _calValuesBalance(newListInputBalances, stateOutputBalances);
+      setState(() {
+        stateInputBalances = newListInputBalances;
+        valorEntradas = valuesBalance[0];
+        valorSaidas = valuesBalance[1];
+      });
+    } else {
+      int indexPrevBalance = stateOutputBalances
+          .indexWhere((BalanceModel item) => oldBalance.uuid == item.uuid);
+      if (balanceEdited != null) {
+        stateOutputBalances[indexPrevBalance] = balanceEdited;
+      } else {
+        stateOutputBalances.removeAt(indexPrevBalance);
+      }
+      List<BalanceModel> newlistOutputBalances = stateOutputBalances;
+
+      List valuesBalance =
+          _calValuesBalance(stateInputBalances, newlistOutputBalances);
+      setState(() {
+        stateOutputBalances = newlistOutputBalances;
+        valorEntradas = valuesBalance[0];
+        valorSaidas = valuesBalance[1];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -132,6 +164,7 @@ class _DetailMonthWidgetState extends State<DetailMonthWidget> {
             onChangePage: widget.onChangePage,
             actualMonth: widget.actualMonth,
             onRemoveItem: _handleRemovebalace,
+            onEditItem: _handleEditbalace,
           ),
         ],
       ),

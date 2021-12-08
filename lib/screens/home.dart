@@ -9,7 +9,7 @@ import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/formats.dart';
 import 'package:plans_gastos/utils/storage.dart';
-import 'package:plans_gastos/widgets/add_balance.dart';
+import 'package:plans_gastos/widgets/add_edit_balance.dart';
 import 'package:plans_gastos/widgets/detail_month.dart';
 import 'package:plans_gastos/widgets/infinite_tab_view.dart';
 // import 'package:plans_gastos/utils/mocks.dart';
@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           topRight: Radius.circular(20),
         ),
       ),
-      builder: (_) => AddBalanceWidget(
+      builder: (_) => AddEditBalanceWidget(
         typeBalance: typeBalance,
         actualMonth: months[actualIndex],
         onAdded: () {

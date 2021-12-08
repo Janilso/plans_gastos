@@ -7,6 +7,7 @@ import 'package:plans_gastos/theme/app_colors.dart';
 import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/storage.dart';
+import 'package:plans_gastos/widgets/add_edit_balance.dart';
 import 'package:plans_gastos/widgets/custom_tab_bar_view_scroll_physics.dart';
 import 'package:plans_gastos/widgets/item_balance.dart';
 
@@ -16,6 +17,8 @@ class BalanceTabViewWidget extends StatefulWidget {
   final void Function(TypeBalance typeBalance)? onChangePage;
   final DateTime? actualMonth;
   final void Function(BalanceModel balanceRemoved)? onRemoveItem;
+  final void Function(BalanceModel oldBalance, BalanceModel? balanceEdited)?
+      onEditItem;
 
   const BalanceTabViewWidget({
     Key? key,
@@ -24,6 +27,7 @@ class BalanceTabViewWidget extends StatefulWidget {
     this.outputBalances = const [],
     this.onChangePage,
     this.onRemoveItem,
+    this.onEditItem,
   }) : super(key: key);
 
   @override
@@ -55,6 +59,30 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
       widget.onChangePage!(
           _tabController.index == 0 ? TypeBalance.inputs : TypeBalance.outputs);
     }
+  }
+
+  void _handleEditBalance(BalanceModel balanceEdit) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      elevation: 5,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (_) => AddEditBalanceWidget(
+        typeBalance: balanceEdit.type ?? TypeBalance.inputs,
+        actualMonth: widget.actualMonth ?? DateTime.now(),
+        balanceEdit: balanceEdit,
+        onEdited: (BalanceModel oldBalance, BalanceModel? balanceEdited) =>
+            widget.onEditItem!(oldBalance, balanceEdited),
+        // onAdded: () {
+        //   setState(() {});
+        // },
+      ),
+    );
   }
 
   @override
@@ -109,13 +137,16 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
               key: UniqueKey(),
               child: Column(
                 children: [
-                  ItemBalanceWidget(
-                    name: balance.numberInstallments != null &&
-                            balance.numberInstallments > 1
-                        ? '${balance.title} - ${balance.installment}/${balance.numberInstallments}'
-                        : balance.title,
-                    value: balance.value,
-                    danger: isOutput,
+                  GestureDetector(
+                    onTap: () => _handleEditBalance(balance),
+                    child: ItemBalanceWidget(
+                      name: balance.numberInstallments != null &&
+                              balance.numberInstallments > 1
+                          ? '${balance.title} - ${balance.installment}/${balance.numberInstallments}'
+                          : balance.title,
+                      value: balance.value,
+                      danger: isOutput,
+                    ),
                   ),
                   if (index != balances.length)
                     const Divider(color: AppColors.grayLight, height: 0)
