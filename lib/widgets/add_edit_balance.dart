@@ -149,8 +149,8 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
         DateTime monthEdit = DateTime(monthParentBalance.year,
             monthParentBalance.month + (i - 1), monthParentBalance.day);
         BalanceModel? prevBalance = await AppStorage.getBalanceByUuidParent(
-            parentBalance?.uuidParent ?? '',
-            parentBalance?.type ?? TypeBalance.inputs,
+            parentBalance!.uuidParent!,
+            parentBalance.type!,
             AppStorage.getKeyMonth(monthEdit));
         late BalanceModel newBalance;
 
@@ -186,7 +186,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
             numberInstallments: parcelas,
             realized: valueSWitch,
             installment: i,
-            uuidParent: parentBalance!.uuid,
+            uuidParent: parentBalance.uuid,
           );
           AppStorage.addBalance(newBalance, AppStorage.getKeyMonth(monthEdit));
         }
@@ -199,7 +199,6 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
     int parcelas = int.parse(_ctlParcelas.text);
     double valorTotal = AppFormats.stringMoneyToDouble(_ctlValor.text);
 
-    // Não alterado o número de parcelas e simples
     if (balanceEdit!.numberInstallments == parcelas && parcelas <= 1) {
       BalanceModel balanceEdited = BalanceModel(
         title: _ctlNome.text,
@@ -215,7 +214,6 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
       AppStorage.updateBalance(
           balanceEdited, AppStorage.getKeyMonth(widget.actualMonth));
       widget.onEdited!(balanceEdit!, balanceEdited);
-      // Não alterado o número de parcelas, parcelado
     } else if (balanceEdit!.numberInstallments == parcelas && parcelas > 1) {
       _editInStorgeInstallment(parcelas, valorTotal);
     } else if (balanceEdit!.numberInstallments != parcelas &&

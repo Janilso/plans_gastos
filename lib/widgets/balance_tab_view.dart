@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
@@ -166,7 +167,11 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("Excluir", style: AppTextStyles.h6SemiBold()),
+                      Text(
+                          balance.numberInstallments > 1
+                              ? "Excluir parcelamentos"
+                              : "Excluir",
+                          style: AppTextStyles.h6SemiBold()),
                       const SizedBox(width: 8),
                       const Icon(Icons.delete_outline, color: Colors.white),
                     ],
@@ -175,13 +180,81 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
               ),
               onDismissed: (_) {
                 if (widget.actualMonth != null) {
-                  AppStorage.deleteBalance(
-                      balance, AppStorage.getKeyMonth(widget.actualMonth!));
-                  widget.onRemoveItem!(balance);
+                  _deletbalance(balance);
+                  // if (balance.numberInstallments > 1) {
+                  //   _deleteConfirm(context, balance);
+                  // } else {
+                  //   _deletbalance(balance);
+                  // }
                 }
               },
             );
           }),
     );
   }
+
+  void _deletbalance(BalanceModel balanceDelet) async {
+    DateTime actualMonth = widget.actualMonth ?? DateTime.now();
+    DateTime monthParentBalance = DateTime(
+      actualMonth.year,
+      actualMonth.month - (balanceDelet.installment - 1),
+      actualMonth.day,
+    );
+    BalanceModel? parentBalance = await AppStorage.getBalanceByUuid(
+        balanceDelet.uuidParent!,
+        balanceDelet.type!,
+        AppStorage.getKeyMonth(monthParentBalance));
+
+    for (int i = 1; i <= parentBalance!.numberInstallments; i++) {
+      DateTime monthEdit = DateTime(monthParentBalance.year,
+          monthParentBalance.month + (i - 1), monthParentBalance.day);
+
+      BalanceModel? prevBalance = await AppStorage.getBalanceByUuidParent(
+          parentBalance.uuidParent!,
+          parentBalance.type!,
+          AppStorage.getKeyMonth(monthEdit));
+      if (prevBalance != null) {
+        AppStorage.deleteBalance(
+            prevBalance, AppStorage.getKeyMonth(monthEdit));
+      }
+    }
+
+    AppStorage.deleteBalance(
+      balanceDelet,
+      AppStorage.getKeyMonth(widget.actualMonth!),
+    );
+    widget.onRemoveItem!(balanceDelet);
+  }
+
+  // void _deleteConfirm(BuildContext context, BalanceModel balanceDelet) {
+  //   showCupertinoDialog(
+  //       context: context,
+  //       builder: (BuildContext ctx) {
+  //         return CupertinoAlertDialog(
+  //           title: Text('Please Confirm'),
+  //           content: Text('Are you sure to remove the text?'),
+  //           actions: [
+  //             // The "Yes" button
+  //             CupertinoDialogAction(
+  //               onPressed: () {
+  //                 _deletbalance(balanceDelet);
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text('Yes'),
+  //               isDefaultAction: true,
+  //               isDestructiveAction: true,
+  //             ),
+  //             // The "No" button
+  //             CupertinoDialogAction(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text('No'),
+  //               isDefaultAction: false,
+  //               isDestructiveAction: false,
+  //             )
+  //           ],
+  //         );
+  //       });
+  // }
 }
