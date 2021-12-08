@@ -79,9 +79,6 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
         balanceEdit: balanceEdit,
         onEdited: (BalanceModel oldBalance, BalanceModel? balanceEdited) =>
             widget.onEditItem!(oldBalance, balanceEdited),
-        // onAdded: () {
-        //   setState(() {});
-        // },
       ),
     );
   }

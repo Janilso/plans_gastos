@@ -87,7 +87,6 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
           value: valorTotal / parcelas,
           valueTotal: valorTotal,
           numberInstallments: parcelas,
-          realized: valueSWitch,
           installment: i,
           uuidParent: firstBalance.uuid,
         );
@@ -128,10 +127,12 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
       if (i == 1) {
         BalanceModel newBalance = BalanceModel(
           title: _ctlNome.text,
-          realized: valueSWitch,
+          realized: parentBalance!.uuid == balanceEdit!.uuid
+              ? valueSWitch
+              : parentBalance.realized,
           valueTotal: valorTotal,
           value: valorTotal / parcelas,
-          type: parentBalance!.type,
+          type: parentBalance.type,
           uuid: parentBalance.uuid,
           numberInstallments: parcelas,
           installment: i,
@@ -160,7 +161,9 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
             value: valorTotal / parcelas,
             valueTotal: valorTotal,
             numberInstallments: parcelas,
-            realized: valueSWitch,
+            realized: prevBalance.uuid == balanceEdit!.uuid
+                ? valueSWitch
+                : prevBalance.realized,
             installment: i,
             uuidParent: prevBalance.uuidParent,
           );
@@ -182,15 +185,14 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
             value: valorTotal / parcelas,
             valueTotal: valorTotal,
             numberInstallments: parcelas,
-            realized: valueSWitch,
             installment: i,
             uuidParent: parentBalance.uuid,
           );
           AppStorage.addBalance(newBalance, AppStorage.getKeyMonth(monthEdit));
         }
-        widget.onEdited!(balanceEdit!, balanceEdited);
       }
     }
+    widget.onEdited!(balanceEdit!, balanceEdited);
   }
 
   _handleEdit() {
@@ -335,7 +337,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
               const SizedBox(height: 8),
               InputWidget(
                 labelText: 'Parcela(s)',
-                valueSWitch: valueSWitch,
+                initialValue: _ctlParcelas,
                 typeBalance: widget.typeBalance,
                 keyboardType: TextInputType.number,
                 type: TypeInput.spin,

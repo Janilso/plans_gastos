@@ -20,6 +20,7 @@ class InputWidget extends StatelessWidget {
   final TypeInput type;
   final TypeBalance typeBalance;
   final bool valueSWitch;
+  final int initialValue;
   final List<TextInputFormatter>? inputFormatters;
 
   const InputWidget({
@@ -37,6 +38,7 @@ class InputWidget extends StatelessWidget {
     this.typeBalance = TypeBalance.inputs,
     this.valueSWitch = false,
     this.inputFormatters,
+    this.initialValue = 1,
   }) : super(key: key);
 
   @override
@@ -117,7 +119,7 @@ class InputWidget extends StatelessWidget {
         child: CupertinoSpinBox(
           min: 1,
           max: 20,
-          value: 1,
+          value: initialValue.toDouble(),
           onChanged: onChange,
           textStyle: AppTextStyles.h6Regular(color: AppColors.black),
           decoration: BoxDecoration(border: Border.all(color: Colors.white)),
