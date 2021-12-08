@@ -43,8 +43,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         date.year == dateNow.year &&
         date.month == dateNow.month &&
         date.day == dateNow.day);
-    //     const
-    // balancesInputsMonths = listBalancesModelFromJson()
   }
 
   @override
@@ -78,8 +76,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ...index == (months.length - 4)
             ? getMoths(
                 initialNextsPrevsMonths,
-                actualMonth,
-                skipMonths: initialNextsPrevsMonths - 1,
+                months[months.length - 1],
               )
             : []
       ];
