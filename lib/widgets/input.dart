@@ -58,7 +58,7 @@ class InputWidget extends StatelessWidget {
                       style: AppTextStyles.h6Regular(color: AppColors.black)),
                 ),
               ),
-              Expanded(flex: 4, child: _buildInput())
+              Expanded(flex: 4, child: _buildInput(context))
             ],
           ),
           const Divider(color: AppColors.grayLight, endIndent: 2),
@@ -67,13 +67,15 @@ class InputWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildInput() {
+  Widget _buildInput(BuildContext context) {
     bool isDanger = typeBalance == TypeBalance.outputs;
 
     Color inputStateColor = isDanger ? AppColors.secondary : AppColors.primary;
     UnderlineInputBorder disabledBorder = const UnderlineInputBorder(
       borderSide: BorderSide(color: Colors.transparent),
     );
+
+    Size sizeScreen = MediaQuery.of(context).size;
     if (type == TypeInput.text) {
       return TextFormField(
         inputFormatters: inputFormatters,
@@ -115,7 +117,7 @@ class InputWidget extends StatelessWidget {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.only(left: 90),
+        padding: EdgeInsets.only(left: sizeScreen.width <= 400 ? 50 : 90),
         child: CupertinoSpinBox(
           min: 1,
           max: 20,
