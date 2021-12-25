@@ -3,7 +3,7 @@ description: Aplicativo de código aberto criado para facilitar seu planejamento
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.1.0+5
+version: 2.1.5+6
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

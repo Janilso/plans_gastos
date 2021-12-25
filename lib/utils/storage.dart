@@ -42,7 +42,9 @@ class AppStorage {
   }
 
   static Future<BalanceModel> addBalance(
-      BalanceModel balance, String keyMonth) async {
+    BalanceModel balance,
+    String keyMonth,
+  ) async {
     String? data = await gett(keyMonth);
     String typeToString =
         EnumToString.convertToString(balance.type, camelCase: true);
@@ -58,12 +60,15 @@ class AppStorage {
   }
 
   static Future<BalanceModel?> getBalanceByUuidParent(
-      String uuidParent, TypeBalance typeBalance, String keyMonth) async {
+    String uuidParent,
+    TypeBalance typeBalance,
+    String keyMonth,
+  ) async {
     String? data = await gett(keyMonth);
     String typeToString =
         EnumToString.convertToString(typeBalance, camelCase: true);
     final dataMonths = data != null ? json.decode(data)[typeToString] : null;
-
+    if (dataMonths == null) return null;
     List<BalanceModel> balances =
         listBalancesModelFromJson(json.encode(dataMonths));
 
@@ -74,10 +79,15 @@ class AppStorage {
   }
 
   static Future<BalanceModel?> getBalanceByUuid(
-      String uuid, TypeBalance typeBalance, String keyMonth) async {
+    String uuid,
+    TypeBalance typeBalance,
+    String keyMonth,
+  ) async {
     String? data = await gett(keyMonth);
+
     String typeToString =
         EnumToString.convertToString(typeBalance, camelCase: true);
+
     final dataMonths = data != null ? json.decode(data)[typeToString] : null;
 
     List<BalanceModel> balances =
@@ -88,8 +98,11 @@ class AppStorage {
     return balance;
   }
 
-  static Future<dynamic> updateBalance(BalanceModel balance, String keyMonth,
-      [bool byUuidParent = false]) async {
+  static Future<dynamic> updateBalance(
+    BalanceModel balance,
+    String keyMonth, [
+    bool byUuidParent = false,
+  ]) async {
     String? data = await gett(keyMonth);
     String typeToString =
         EnumToString.convertToString(balance.type, camelCase: true);
@@ -111,7 +124,9 @@ class AppStorage {
   }
 
   static Future<dynamic> deleteBalance(
-      BalanceModel balance, String keyMonth) async {
+    BalanceModel balance,
+    String keyMonth,
+  ) async {
     String? data = await gett(keyMonth);
     String typeToString =
         EnumToString.convertToString(balance.type, camelCase: true);

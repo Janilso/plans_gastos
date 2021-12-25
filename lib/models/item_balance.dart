@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:plans_gastos/utils/enuns.dart';
+import 'package:plans_gastos/utils/formats.dart';
 
 List<BalanceModel> listBalancesModelFromJson(String str) =>
     List<BalanceModel>.from(
@@ -17,7 +18,7 @@ String balanceModelToJson(BalanceModel data) => json.encode(data.toJson());
 
 class BalanceModel {
   String uuid;
-  String? uuidParent;
+  String uuidParent;
   String title;
   double value;
   double valueTotal;
@@ -25,6 +26,7 @@ class BalanceModel {
   bool realized;
   int installment;
   int numberInstallments;
+  DateTime parentDate;
 
   BalanceModel({
     required this.uuid,
@@ -35,8 +37,24 @@ class BalanceModel {
     this.numberInstallments = 1,
     this.type = TypeBalance.inputs,
     this.realized = false,
-    this.uuidParent,
+    required this.uuidParent,
+    required this.parentDate,
   });
+
+  @override
+  toString() {
+    return "uuid: $uuid"
+            "\n uuidParent: $uuidParent"
+            "\n title: $title"
+            "\n value: $value"
+            "\n valueTotal: $valueTotal"
+            "\n type: $type"
+            "\n realized: $realized"
+            "\n installment: $installment"
+            "\n numberInstallments: $numberInstallments"
+            "\n parentDate: " +
+        AppFormats.dateToFormat(parentDate);
+  }
 
   factory BalanceModel.fromJson(Map<String, dynamic> json) => BalanceModel(
         uuid: json["uuid"],
@@ -48,6 +66,7 @@ class BalanceModel {
         type: EnumToString.fromString(TypeBalance.values, json["type"]),
         realized: json["realized"],
         uuidParent: json["uuidParent"],
+        parentDate: DateTime.parse(json["parentDate"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -60,5 +79,6 @@ class BalanceModel {
         "type": EnumToString.convertToString(type),
         "realized": realized,
         "uuidParent": uuidParent,
+        "parentDate": parentDate.toIso8601String(),
       };
 }

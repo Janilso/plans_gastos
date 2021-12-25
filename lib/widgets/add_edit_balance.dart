@@ -66,6 +66,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
     for (int i = 1; i <= parcelas; i++) {
       if (i == 1) {
         String uuid = const Uuid().v4();
+
         firstBalance = BalanceModel(
           title: _ctlNome.text,
           type: widget.typeBalance,
@@ -76,6 +77,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
           realized: valueSWitch,
           installment: i,
           uuidParent: uuid,
+          parentDate: DateTime.now(),
         );
         AppStorage.addBalance(
             firstBalance, AppStorage.getKeyMonth(widget.actualMonth));
@@ -89,6 +91,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
           numberInstallments: parcelas,
           installment: i,
           uuidParent: firstBalance.uuid,
+          parentDate: firstBalance.parentDate,
         );
         DateTime actualMonth = widget.actualMonth;
         DateTime monthSave = DateTime(
@@ -108,15 +111,10 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
   _editInStorgeInstallment(int parcelas, double valorTotal,
       {int? limiteParcelas, int? sizeLoop}) async {
     int limitInstallment = limiteParcelas ?? parcelas;
-    DateTime actualMonth = widget.actualMonth;
-    DateTime monthParentBalance = DateTime(
-      actualMonth.year,
-      actualMonth.month - (balanceEdit!.installment - 1),
-      actualMonth.day,
-    );
+    DateTime monthParentBalance = balanceEdit!.parentDate;
 
     BalanceModel? parentBalance = await AppStorage.getBalanceByUuid(
-        balanceEdit!.uuidParent ?? '',
+        balanceEdit!.uuidParent,
         balanceEdit!.type ?? TypeBalance.inputs,
         AppStorage.getKeyMonth(monthParentBalance));
 
@@ -137,6 +135,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
           numberInstallments: parcelas,
           installment: i,
           uuidParent: parentBalance.uuidParent,
+          parentDate: parentBalance.parentDate,
         );
 
         AppStorage.updateBalance(
@@ -147,10 +146,10 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
       } else {
         DateTime monthEdit = DateTime(monthParentBalance.year,
             monthParentBalance.month + (i - 1), monthParentBalance.day);
+        String keyMonth = AppStorage.getKeyMonth(monthEdit);
+
         BalanceModel? prevBalance = await AppStorage.getBalanceByUuidParent(
-            parentBalance!.uuidParent!,
-            parentBalance.type!,
-            AppStorage.getKeyMonth(monthEdit));
+            parentBalance!.uuidParent, parentBalance.type!, keyMonth);
         late BalanceModel newBalance;
 
         if (prevBalance != null) {
@@ -166,6 +165,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
                 : prevBalance.realized,
             installment: i,
             uuidParent: prevBalance.uuidParent,
+            parentDate: prevBalance.parentDate,
           );
           if (i > limitInstallment) {
             AppStorage.deleteBalance(
@@ -187,6 +187,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
             numberInstallments: parcelas,
             installment: i,
             uuidParent: parentBalance.uuid,
+            parentDate: parentBalance.parentDate,
           );
           AppStorage.addBalance(newBalance, AppStorage.getKeyMonth(monthEdit));
         }
@@ -210,6 +211,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
         numberInstallments: balanceEdit!.numberInstallments,
         installment: balanceEdit!.installment,
         uuidParent: balanceEdit!.uuidParent,
+        parentDate: balanceEdit!.parentDate,
       );
       AppStorage.updateBalance(
           balanceEdited, AppStorage.getKeyMonth(widget.actualMonth));
@@ -227,42 +229,6 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
         valorTotal,
       );
     }
-
-    // late BalanceModel firstBalance;
-
-    // for (int i = 1; i <= parcelas; i++) {
-    //   if (i == 1) {
-    //     firstBalance = BalanceModel(
-    //       title: _ctlNome.text,
-    //       type: balanceEdit!.type,
-    //       uuid: balanceEdit!.uuid,
-    //       value: valorTotal / parcelas,
-    //       valueTotal: valorTotal,
-    //       numberInstallments: parcelas,
-    //       realized: valueSWitch,
-    //       installment: i,
-    //     );
-    //     AppStorage.addBalance(
-    //         firstBalance, AppStorage.getKeyMonth(widget.actualMonth));
-    //   } else {
-    //     BalanceModel newBalance = BalanceModel(
-    //       title: _ctlNome.text,
-    //       type: widget.typeBalance,
-    //       uuid: const Uuid().v4(),
-    //       value: valorTotal / parcelas,
-    //       valueTotal: valorTotal,
-    //       numberInstallments: parcelas,
-    //       realized: valueSWitch,
-    //       installment: i,
-    //       uuidParent: firstBalance.uuid,
-    //     );
-    //     DateTime actualMonth = widget.actualMonth;
-    //     DateTime monthSave = DateTime(
-    //         actualMonth.year, actualMonth.month + (i - 1), actualMonth.day);
-    //     AppStorage.addBalance(newBalance, AppStorage.getKeyMonth(monthSave));
-    //   }
-    // }
-    // widget.onEdited!();
   }
 
   _handleSaveBalance() {

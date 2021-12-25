@@ -138,8 +138,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                   GestureDetector(
                     onTap: () => _handleEditBalance(balance),
                     child: ItemBalanceWidget(
-                      name: balance.numberInstallments != null &&
-                              balance.numberInstallments > 1
+                      name: balance.numberInstallments > 1
                           ? '${balance.title} - ${balance.installment}/${balance.numberInstallments}'
                           : balance.title,
                       value: balance.value,
@@ -199,7 +198,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
       actualMonth.day,
     );
     BalanceModel? parentBalance = await AppStorage.getBalanceByUuid(
-        balanceDelet.uuidParent!,
+        balanceDelet.uuidParent,
         balanceDelet.type!,
         AppStorage.getKeyMonth(monthParentBalance));
 
@@ -208,7 +207,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
           monthParentBalance.month + (i - 1), monthParentBalance.day);
 
       BalanceModel? prevBalance = await AppStorage.getBalanceByUuidParent(
-          parentBalance.uuidParent!,
+          parentBalance.uuidParent,
           parentBalance.type!,
           AppStorage.getKeyMonth(monthEdit));
       if (prevBalance != null) {
