@@ -117,7 +117,7 @@ class InputWidget extends StatelessWidget {
       );
     } else {
       return Padding(
-        padding: EdgeInsets.only(left: sizeScreen.width <= 400 ? 50 : 90),
+        padding: EdgeInsets.only(left: sizeScreen.width <= 350 ? 50 : 90),
         child: CupertinoSpinBox(
           min: 1,
           max: 20,

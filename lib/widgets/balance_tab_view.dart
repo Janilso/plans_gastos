@@ -102,7 +102,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
             ),
           ),
           Container(
-            height: sizeScreen.height - (sizeScreen.width <= 400 ? 323 : 318),
+            height: sizeScreen.height - (sizeScreen.width <= 350 ? 323 : 318),
             margin: const EdgeInsets.only(top: 12),
             child: TabBarView(
               controller: _tabController,
