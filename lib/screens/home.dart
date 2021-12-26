@@ -9,10 +9,10 @@ import 'package:plans_gastos/theme/app_text_styles.dart';
 import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/formats.dart';
 import 'package:plans_gastos/utils/storage.dart';
-import 'package:plans_gastos/widgets/add_balance.dart';
+import 'package:plans_gastos/widgets/add_edit_balance.dart';
 import 'package:plans_gastos/widgets/detail_month.dart';
 import 'package:plans_gastos/widgets/infinite_tab_view.dart';
-import 'package:plans_gastos/utils/mocks.dart';
+// import 'package:plans_gastos/utils/mocks.dart';
 import 'package:plans_gastos/widgets/app_bar.dart';
 import "package:plans_gastos/utils/string_extension.dart";
 
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<DateTime> months = [];
   int initialNextsPrevsMonths = 12;
   late int actualIndex;
-  List<BalanceModel> mockBalances = Mocks.mockListItemBalice;
+  // List<BalanceModel> mockBalances = Mocks.mockListItemBalice;
   TypeBalance typeBalancePage = TypeBalance.inputs;
 
   @override
@@ -43,8 +43,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         date.year == dateNow.year &&
         date.month == dateNow.month &&
         date.day == dateNow.day);
-    //     const
-    // balancesInputsMonths = listBalancesModelFromJson()
   }
 
   @override
@@ -78,8 +76,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ...index == (months.length - 4)
             ? getMoths(
                 initialNextsPrevsMonths,
-                actualMonth,
-                skipMonths: initialNextsPrevsMonths - 1,
+                months[months.length - 1],
               )
             : []
       ];
@@ -114,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           topRight: Radius.circular(20),
         ),
       ),
-      builder: (_) => AddBalanceWidget(
+      builder: (_) => AddEditBalanceWidget(
         typeBalance: typeBalance,
         actualMonth: months[actualIndex],
         onAdded: () {
@@ -127,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     bool isDanger = typeBalancePage == TypeBalance.outputs;
-    String titlePage = isDanger ? 'SAÍDAS' : 'ENTRADAS';
+    String titlePage = isDanger ? 'GASTOS' : 'GANHOS';
     Color colorState = isDanger ? AppColors.secondary : AppColors.primary;
 
     return Scaffold(

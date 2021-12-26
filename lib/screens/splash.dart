@@ -40,13 +40,33 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
         child: ListView(
           shrinkWrap: true,
           children: [
-            Image.asset(ImagesAssets.logo),
+            Image.asset(
+              ImagesAssets.logo,
+              width: 105,
+              height: 105,
+            ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('PLANS ', style: AppTextStyles.h3Regular()),
+                Text('PLANS', style: AppTextStyles.h3Regular()),
                 Text('Gastos', style: AppTextStyles.h3SemiBold()),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.25),
+              height: 1,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 12),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Simples controle', style: AppTextStyles.h6Regular()),
+                const SizedBox(height: 5),
+                Text('financeiro', style: AppTextStyles.h6Regular()),
               ],
             ),
           ],
