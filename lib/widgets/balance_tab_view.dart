@@ -100,7 +100,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                 ],
               ),
             ),
-            Flexible(
+            Expanded(
               child: Container(
                 margin: const EdgeInsets.only(top: 12),
                 child: TabBarView(
