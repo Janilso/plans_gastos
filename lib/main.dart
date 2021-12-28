@@ -15,7 +15,7 @@ Future<void> main() async {
       options.tracesSampleRate = 1.0;
       options.enableAutoSessionTracking = true;
     },
-    appRunner: () => runApp(MyApp()),
+    appRunner: () => runApp(const MyApp()),
   );
 }
 

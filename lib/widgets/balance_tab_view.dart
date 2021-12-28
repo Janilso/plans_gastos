@@ -16,14 +16,14 @@ class BalanceTabViewWidget extends StatefulWidget {
   final List<BalanceModel> inputBalances;
   final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
-  final DateTime? actualMonth;
+  final DateTime actualMonth;
   final void Function(BalanceModel balanceRemoved)? onRemoveItem;
   final void Function(BalanceModel oldBalance, BalanceModel? balanceEdited)?
       onEditItem;
 
   const BalanceTabViewWidget({
     Key? key,
-    this.actualMonth,
+    required this.actualMonth,
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
@@ -74,7 +74,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
       ),
       builder: (_) => AddEditBalanceWidget(
         typeBalance: balanceEdit.type ?? TypeBalance.inputs,
-        actualMonth: widget.actualMonth ?? DateTime.now(),
+        actualMonth: widget.actualMonth,
         balanceEdit: balanceEdit,
         onEdited: (BalanceModel oldBalance, BalanceModel? balanceEdited) =>
             widget.onEditItem!(oldBalance, balanceEdited),
@@ -178,14 +178,14 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                 ),
               ),
               onDismissed: (_) {
-                if (widget.actualMonth != null) {
-                  _deletbalance(balance);
-                  // if (balance.numberInstallments > 1) {
-                  //   _deleteConfirm(context, balance);
-                  // } else {
-                  //   _deletbalance(balance);
-                  // }
-                }
+                _deletbalance(balance);
+                // if (widget.actualMonth != null) {
+                // if (balance.numberInstallments > 1) {
+                //   _deleteConfirm(context, balance);
+                // } else {
+                //   _deletbalance(balance);
+                // }
+                // }
               },
             );
           }),
@@ -193,7 +193,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
   }
 
   void _deletbalance(BalanceModel balanceDelet) async {
-    DateTime actualMonth = widget.actualMonth ?? DateTime.now();
+    DateTime actualMonth = widget.actualMonth;
     DateTime monthParentBalance = DateTime(
       actualMonth.year,
       actualMonth.month - (balanceDelet.installment - 1),
@@ -220,7 +220,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
 
     AppStorage.deleteBalance(
       balanceDelet,
-      AppStorage.getKeyMonth(widget.actualMonth!),
+      AppStorage.getKeyMonth(widget.actualMonth),
     );
     widget.onRemoveItem!(balanceDelet);
   }

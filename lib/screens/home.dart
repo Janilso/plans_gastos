@@ -73,12 +73,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (isChange) {
       newMonths = [
         ...months,
-        ...index == (months.length - 4)
+        ...(index == (months.length - 4)
             ? getMoths(
                 initialNextsPrevsMonths,
                 months[months.length - 1],
               )
-            : []
+            : [])
       ];
       newInitialIndex = newMonths.indexWhere((date) =>
           date.year == actualMonth.year &&

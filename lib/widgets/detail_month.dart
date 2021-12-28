@@ -13,11 +13,11 @@ class DetailMonthWidget extends StatefulWidget {
   final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
 
-  final DateTime? actualMonth;
+  final DateTime actualMonth;
 
   const DetailMonthWidget({
     Key? key,
-    this.actualMonth,
+    required this.actualMonth,
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
@@ -88,8 +88,6 @@ class _DetailMonthWidgetState extends State<DetailMonthWidget> {
         valorEntradas = valuesBalance[0];
         valorSaidas = valuesBalance[1];
       });
-
-      // _calValuesBalance(stateInputBalances, newlistOutputBalances);
     }
   }
 
