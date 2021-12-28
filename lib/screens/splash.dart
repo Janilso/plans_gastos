@@ -26,6 +26,15 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
               )
             });
     super.initState();
+
+    // try {
+    //   aMethodThatMightFail();
+    // } catch (exception, stackTrace) {
+    //   await Sentry.captureException(
+    //     exception,
+    //     stackTrace: stackTrace,
+    //   );
+    // }
   }
 
   Future<String> _getVersionApp() async {
