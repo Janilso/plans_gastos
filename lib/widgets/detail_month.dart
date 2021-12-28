@@ -165,7 +165,7 @@ class _DetailMonthWidgetState extends State<DetailMonthWidget> {
             actualMonth: widget.actualMonth,
             onRemoveItem: _handleRemovebalace,
             onEditItem: _handleEditbalace,
-          ),
+          )
         ],
       ),
     );

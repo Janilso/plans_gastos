@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
+// import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
@@ -46,7 +46,6 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
       length: 2,
       vsync: this,
     )..addListener(handleChangePage);
-    // _tabController.animation
   }
 
   @override
@@ -85,35 +84,37 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
 
   @override
   Widget build(BuildContext context) {
-    Size sizeScreen = MediaQuery.of(context).size;
     return DefaultTabController(
       length: 2,
-      child: Column(
-        children: [
-          Center(
-            child: TabBar(
-              controller: _tabController,
-              dragStartBehavior: DragStartBehavior.down,
-              isScrollable: true,
-              tabs: const [
-                Tab(icon: Text('GANHOS')),
-                Tab(icon: Text('GASTOS')),
-              ],
+      child: Expanded(
+        child: Column(
+          children: [
+            Center(
+              child: TabBar(
+                controller: _tabController,
+                dragStartBehavior: DragStartBehavior.down,
+                isScrollable: true,
+                tabs: const [
+                  Tab(icon: Text('GANHOS')),
+                  Tab(icon: Text('GASTOS')),
+                ],
+              ),
             ),
-          ),
-          Container(
-            height: sizeScreen.height - (sizeScreen.width <= 350 ? 323 : 318),
-            margin: const EdgeInsets.only(top: 12),
-            child: TabBarView(
-              controller: _tabController,
-              physics: const CustomTabBarViewScrollPhysics(),
-              children: [
-                _buildBalances(widget.inputBalances),
-                _buildBalances(widget.outputBalances, true),
-              ],
-            ),
-          )
-        ],
+            Flexible(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12),
+                child: TabBarView(
+                  controller: _tabController,
+                  physics: const CustomTabBarViewScrollPhysics(),
+                  children: [
+                    _buildBalances(widget.inputBalances),
+                    _buildBalances(widget.outputBalances, true),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
