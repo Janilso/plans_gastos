@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
@@ -112,14 +112,23 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
       {int? limiteParcelas, int? sizeLoop}) async {
     int limitInstallment = limiteParcelas ?? parcelas;
     DateTime monthParentBalance = balanceEdit!.parentDate;
+    String monthStr = AppStorage.getKeyMonth(monthParentBalance);
 
     BalanceModel? parentBalance = await AppStorage.getBalanceByUuid(
         balanceEdit!.uuidParent,
         balanceEdit!.type ?? TypeBalance.inputs,
-        AppStorage.getKeyMonth(monthParentBalance));
+        monthStr);
 
     int stopLoop = sizeLoop ?? parcelas;
     BalanceModel? balanceEdited;
+
+    if (parentBalance == null) {
+      return ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ocorreu um erro ao editar!'),
+        ),
+      );
+    }
 
     for (int i = 1; i <= stopLoop; i++) {
       if (i == 1) {
