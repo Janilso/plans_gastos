@@ -4,9 +4,18 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:plans_gastos/utils/enuns.dart';
 import 'package:plans_gastos/utils/formats.dart';
 
-List<BalanceModel> listBalancesModelFromJson(String str) =>
-    List<BalanceModel>.from(
-        json.decode(str).map((x) => balanceModelFromJson(x)));
+List<BalanceModel> listBalancesModelFromJson(String str) {
+  var list = json.decode(str).map((x) => balanceModelFromJson(x));
+  return List<BalanceModel>.from(list);
+}
+
+// List<BalanceModel> listBalancesModelFromJson(String str) {
+//   return json.decode(str).map((data) => BalanceModel.fromJson(data)).toList();
+// }
+
+// List<BalanceModel> listBalancesModelFromJson(String str) =>
+//     List<BalanceModel>.from(
+//         json.decode(str).map((x) => balanceModelFromJson(x)));
 
 // String listBalancesModelFromJson(List<BalanceModel> list) =>
 //     list.from(json.decode(str).map((x) => balanceModelFromJson(x)));

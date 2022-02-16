@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
+// import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plans_gastos/models/item_balance.dart';
 import 'package:plans_gastos/theme/app_colors.dart';
@@ -16,14 +16,14 @@ class BalanceTabViewWidget extends StatefulWidget {
   final List<BalanceModel> inputBalances;
   final List<BalanceModel> outputBalances;
   final void Function(TypeBalance typeBalance)? onChangePage;
-  final DateTime? actualMonth;
+  final DateTime actualMonth;
   final void Function(BalanceModel balanceRemoved)? onRemoveItem;
   final void Function(BalanceModel oldBalance, BalanceModel? balanceEdited)?
       onEditItem;
 
   const BalanceTabViewWidget({
     Key? key,
-    this.actualMonth,
+    required this.actualMonth,
     this.inputBalances = const [],
     this.outputBalances = const [],
     this.onChangePage,
@@ -46,7 +46,6 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
       length: 2,
       vsync: this,
     )..addListener(handleChangePage);
-    // _tabController.animation
   }
 
   @override
@@ -75,7 +74,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
       ),
       builder: (_) => AddEditBalanceWidget(
         typeBalance: balanceEdit.type ?? TypeBalance.inputs,
-        actualMonth: widget.actualMonth ?? DateTime.now(),
+        actualMonth: widget.actualMonth,
         balanceEdit: balanceEdit,
         onEdited: (BalanceModel oldBalance, BalanceModel? balanceEdited) =>
             widget.onEditItem!(oldBalance, balanceEdited),
@@ -85,35 +84,37 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
 
   @override
   Widget build(BuildContext context) {
-    Size sizeScreen = MediaQuery.of(context).size;
     return DefaultTabController(
       length: 2,
-      child: Column(
-        children: [
-          Center(
-            child: TabBar(
-              controller: _tabController,
-              dragStartBehavior: DragStartBehavior.down,
-              isScrollable: true,
-              tabs: const [
-                Tab(icon: Text('GANHOS')),
-                Tab(icon: Text('GASTOS')),
-              ],
+      child: Expanded(
+        child: Column(
+          children: [
+            Center(
+              child: TabBar(
+                controller: _tabController,
+                dragStartBehavior: DragStartBehavior.down,
+                isScrollable: true,
+                tabs: const [
+                  Tab(icon: Text('GANHOS')),
+                  Tab(icon: Text('GASTOS')),
+                ],
+              ),
             ),
-          ),
-          Container(
-            height: sizeScreen.height - (sizeScreen.width <= 350 ? 323 : 318),
-            margin: const EdgeInsets.only(top: 12),
-            child: TabBarView(
-              controller: _tabController,
-              physics: const CustomTabBarViewScrollPhysics(),
-              children: [
-                _buildBalances(widget.inputBalances),
-                _buildBalances(widget.outputBalances, true),
-              ],
-            ),
-          )
-        ],
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12),
+                child: TabBarView(
+                  controller: _tabController,
+                  physics: const CustomTabBarViewScrollPhysics(),
+                  children: [
+                    _buildBalances(widget.inputBalances),
+                    _buildBalances(widget.outputBalances, true),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -177,14 +178,14 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
                 ),
               ),
               onDismissed: (_) {
-                if (widget.actualMonth != null) {
-                  _deletbalance(balance);
-                  // if (balance.numberInstallments > 1) {
-                  //   _deleteConfirm(context, balance);
-                  // } else {
-                  //   _deletbalance(balance);
-                  // }
-                }
+                _deletbalance(balance);
+                // if (widget.actualMonth != null) {
+                // if (balance.numberInstallments > 1) {
+                //   _deleteConfirm(context, balance);
+                // } else {
+                //   _deletbalance(balance);
+                // }
+                // }
               },
             );
           }),
@@ -192,7 +193,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
   }
 
   void _deletbalance(BalanceModel balanceDelet) async {
-    DateTime actualMonth = widget.actualMonth ?? DateTime.now();
+    DateTime actualMonth = widget.actualMonth;
     DateTime monthParentBalance = DateTime(
       actualMonth.year,
       actualMonth.month - (balanceDelet.installment - 1),
@@ -219,7 +220,7 @@ class _BalanceTabViewWidgetState extends State<BalanceTabViewWidget>
 
     AppStorage.deleteBalance(
       balanceDelet,
-      AppStorage.getKeyMonth(widget.actualMonth!),
+      AppStorage.getKeyMonth(widget.actualMonth),
     );
     widget.onRemoveItem!(balanceDelet);
   }

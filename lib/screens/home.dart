@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _handleChangeMonth([int index = 0]) {
-    late final List<DateTime> newMonths;
+    List<DateTime> newMonths = months;
     int newInitialIndex = index;
     DateTime actualMonth = months[index];
     bool isChange = index == (months.length - 4);
@@ -73,12 +73,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (isChange) {
       newMonths = [
         ...months,
-        ...index == (months.length - 4)
+        ...(index == (months.length - 4)
             ? getMoths(
                 initialNextsPrevsMonths,
                 months[months.length - 1],
               )
-            : []
+            : [])
       ];
       newInitialIndex = newMonths.indexWhere((date) =>
           date.year == actualMonth.year &&
@@ -86,9 +86,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           date.day == actualMonth.day);
     }
     setState(() {
-      if (isChange) {
-        months = newMonths;
-      }
+      months = newMonths;
       actualIndex = newInitialIndex;
       typeBalancePage = TypeBalance.inputs;
     });
@@ -175,7 +173,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ? listBalancesModelFromJson(json.encode(dataOutput))
                             : [];
 
-                    // print("data $data");
                     return DetailMonthWidget(
                       inputBalances: balancesInputsMonths,
                       outputBalances: balancesOutputsMonths,
@@ -184,11 +181,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     );
                   }
                   return DetailMonthWidget(
+                    actualMonth: months[actualIndex],
                     onChangePage: _handleChangeBalance,
+                    inputBalances: const [],
+                    outputBalances: const [],
                   );
-                  // return Center(
-                  //   child: CircularProgressIndicator(),
-                  // );
                 });
           },
           onChangePage: _handleChangeMonth,
