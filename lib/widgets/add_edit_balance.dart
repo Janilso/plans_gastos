@@ -134,7 +134,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
       if (i == 1) {
         BalanceModel newBalance = BalanceModel(
           title: _ctlNome.text,
-          realized: parentBalance!.uuid == balanceEdit!.uuid
+          realized: parentBalance.uuid == balanceEdit!.uuid
               ? valueSWitch
               : parentBalance.realized,
           valueTotal: valorTotal,
@@ -158,7 +158,7 @@ class _AddEditBalanceWidgetState extends State<AddEditBalanceWidget> {
         String keyMonth = AppStorage.getKeyMonth(monthEdit);
 
         BalanceModel? prevBalance = await AppStorage.getBalanceByUuidParent(
-            parentBalance!.uuidParent, parentBalance.type!, keyMonth);
+            parentBalance.uuidParent, parentBalance.type!, keyMonth);
         late BalanceModel newBalance;
 
         if (prevBalance != null) {
