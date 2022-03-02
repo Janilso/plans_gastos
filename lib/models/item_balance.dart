@@ -35,6 +35,7 @@ class BalanceModel {
   bool realized;
   int installment;
   int numberInstallments;
+
   DateTime parentDate;
 
   BalanceModel({
